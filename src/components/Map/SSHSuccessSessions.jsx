@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { BubbleMapChart, topojson } from "chartjs-chart-geo";
-import world from "../assets/countries-110m.json";
+import world from "../../assets/countries-110m.json";
 
 const worldFeatures = topojson.feature(world, world.objects.countries).features;
 
@@ -33,15 +33,20 @@ const data = {
   ],
 };
 
-const InvalidSSHMap = () => {
-  const [offset, setOffset] = useState([0, 0]);
-  const [zoom, setZoom] = useState(1);
-
+const SSHSuccessSessions = () => {
   const [chart, setChart] = useState(null);
   const chartRef = useRef();
 
+  // Clone and interactivity
+  const [zoom, setZoom] = useState(2);
+  const [offset, setOffset] = useState([0, 0]);
+
+  const [imageSrc, setImageSrc] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+
   useEffect(() => {
     if (!chartRef.current) return;
+
     const chartInstance = chartRef.current.getContext("2d");
     const newChart = new BubbleMapChart(chartInstance, {
       type: "bubbleMap",
@@ -57,21 +62,15 @@ const InvalidSSHMap = () => {
   }, [chartRef]);
 
   useEffect(() => {
-    if (!chart) return;
-    chart.options = getChartOptions(offset, zoom);
-    chart.update();
-  }, [chart, offset, zoom]);
-
-  useEffect(() => {
     if (!chartRef.current) return;
     const startPos = { x: 0, y: 0 };
 
     const mouseDownListener = (e) => {
       startPos.x = e.clientX;
       startPos.y = e.clientY;
-      const clone = chartRef.current.cloneNode(true);
       const wrapper = document.getElementById("cloneWrapper");
-      wrapper.appendChild(clone);
+
+      setShowPreview(true);
 
       const moveListener = (e) => {
         e.preventDefault();
@@ -86,11 +85,14 @@ const InvalidSSHMap = () => {
       const mouseUpListener = (e) => {
         chartRef.current.removeEventListener("mousemove", moveListener);
         setOffset((prevOffset) => [
-          prevOffset[0] + (e.clientX - startPos.x) * 0.1,
-          prevOffset[1] + (e.clientY - startPos.y) * 0.1,
+          prevOffset[0] + (e.clientX - startPos.x),
+          prevOffset[1] + (e.clientY - startPos.y),
         ]);
-        wrapper.removeChild(clone);
+        wrapper.style.left = 0;
+        wrapper.style.top = 0;
         chartRef.current.removeEventListener("mouseup", mouseUpListener);
+
+        setShowPreview(false);
       };
 
       chartRef.current.addEventListener("mouseup", mouseUpListener, {
@@ -113,11 +115,34 @@ const InvalidSSHMap = () => {
     };
   }, [chartRef]);
 
+  useEffect(() => {
+    if (!chart) return;
+
+    chart.options = getChartOptions(offset, zoom);
+    chart.update();
+
+    // Generate image preview
+    const imgUrl = chartRef.current.toDataURL("image/png");
+    setImageSrc(imgUrl);
+  }, [chart, offset, zoom]);
+
+  useEffect(() => {
+    if (!chartRef.current || !chart) return;
+
+    chart.options = getChartOptions(offset, zoom);
+    chart.update();
+
+    if (showPreview) {
+      const imgUrl = chartRef.current.toDataURL("image/png");
+      setImageSrc(imgUrl);
+    }
+  }, [chart, offset, zoom, showPreview]);
+
   function getChartOptions(offset, zoom) {
     return {
       plugins: {
         legend: {
-          display: true,
+          display: false,
         },
         datalabels: {
           align: "top",
@@ -130,6 +155,7 @@ const InvalidSSHMap = () => {
         geoFeature: {
           outlineBorderColor: "#FFFFFF",
           outlineBorderWidth: 0.5,
+          outlineBackgroundColor: "rgba(0, 0, 0, 0.5)",
         },
       },
       scales: {
@@ -143,11 +169,6 @@ const InvalidSSHMap = () => {
           axis: "x",
           size: [1, 50],
         },
-        color: {
-          axis: "x",
-          color: "value",
-          colors: ["#000"],
-        },
       },
       layout: {},
     };
@@ -155,8 +176,11 @@ const InvalidSSHMap = () => {
 
   return (
     <div className="w-full h-full relative overflow-clip">
-      <div className="w-full absolute">
-        <div id="cloneWrapper" className="bg-red-500"></div>
+      <div
+        className="w-full absolute pointer-events-none opacity-30"
+        id="cloneWrapper"
+      >
+        {showPreview && imageSrc && <img src={imageSrc} alt="Chart Preview" />}
       </div>
       <div className="w-full absolute">
         <canvas ref={chartRef} />
@@ -165,4 +189,4 @@ const InvalidSSHMap = () => {
   );
 };
 
-export default InvalidSSHMap;
+export default SSHSuccessSessions;
