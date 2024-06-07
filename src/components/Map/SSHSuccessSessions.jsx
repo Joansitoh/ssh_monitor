@@ -36,6 +36,7 @@ const data = {
 const SSHSuccessSessions = () => {
   const [chart, setChart] = useState(null);
   const chartRef = useRef();
+  const wrapperRef = useRef();
 
   // Clone and interactivity
   const [zoom, setZoom] = useState(2);
@@ -68,7 +69,7 @@ const SSHSuccessSessions = () => {
     const mouseDownListener = (e) => {
       startPos.x = e.clientX;
       startPos.y = e.clientY;
-      const wrapper = document.getElementById("cloneWrapper");
+      const wrapper = wrapperRef.current;
 
       setShowPreview(true);
 
@@ -154,7 +155,7 @@ const SSHSuccessSessions = () => {
       elements: {
         geoFeature: {
           outlineBorderColor: "#FFFFFF",
-          outlineBorderWidth: 0.5,
+          outlineBorderWidth: 0.2,
           outlineBackgroundColor: "rgba(0, 0, 0, 0.5)",
         },
       },
@@ -175,17 +176,17 @@ const SSHSuccessSessions = () => {
   }
 
   return (
-    <div className="w-full h-full relative overflow-clip">
+    <>
       <div
         className="w-full absolute pointer-events-none opacity-30"
-        id="cloneWrapper"
+        ref={wrapperRef}
       >
         {showPreview && imageSrc && <img src={imageSrc} alt="Chart Preview" />}
       </div>
       <div className="w-full absolute">
         <canvas ref={chartRef} />
       </div>
-    </div>
+    </>
   );
 };
 

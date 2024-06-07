@@ -12,6 +12,7 @@ import {
 import zoomPlugin from "chartjs-plugin-zoom";
 import SSHSuccessSessions from "./components/Map/SSHSuccessSessions";
 import InvalidSudo from "./components/Bar/InvalidSudo";
+import BoardCard from "./components/Card/BoardCard";
 Chart.register(
   zoomPlugin,
   ChoroplethController,
@@ -28,45 +29,67 @@ function App() {
       </div>
       <div className="flex-1 flex flex-col p-5 gap-2">
         <div className="flex gap-2">
-          <div className="bg-zinc-800 h-60 w-full rounded-lg p-1 gap-2 flex flex-col border">
-            <h1 className="text-xs font-bold text-zinc-100">
-              Invalid SSH attempts map
-            </h1>
+          <BoardCard title="Invalid SSH attempts">
             <SSHInvalidAttempts />
-          </div>
-          <div className="bg-zinc-800 h-60 w-full rounded-lg p-1 gap-2 flex flex-col border">
-            <h1 className="text-xs font-bold text-zinc-100">
-              Successful SSH sessions map
-            </h1>
+          </BoardCard>
+          <BoardCard title="Successful SSH sessions">
             <SSHSuccessSessions />
+          </BoardCard>
+        </div>
+        <div className="flex gap-2">
+          <div className="flex gap-2 w-full">
+            <BoardCard title="Invalid sudo">
+              <InvalidSudo />
+            </BoardCard>
+            <BoardCard width="25%">
+              <div className="flex flex-col justify-center items-center w-full h-full">
+                <h1 className="text-6xl font-bold text-zinc-100">22</h1>
+                <p className="text-md text-center text-zinc-300">
+                  Total Failed sudo attempts
+                </p>
+              </div>
+            </BoardCard>
+          </div>
+          <div className="flex gap-2 w-full">
+            <BoardCard title="Successful sudo">
+              <InvalidSudo />
+            </BoardCard>
+            <BoardCard width="25%">
+              <div className="flex flex-col justify-center items-center w-full h-full">
+                <h1 className="text-6xl font-bold text-zinc-100">22</h1>
+                <p className="text-md text-center text-zinc-300">
+                  Total Successful sudo sessions
+                </p>
+              </div>
+            </BoardCard>
           </div>
         </div>
         <div className="flex gap-2">
-          <div className="h-60 w-full rounded-lg gap-2 flex">
-            <div className="bg-zinc-800 h-full w-full rounded-lg p-1 gap-2 flex flex-col border">
-              <h1 className="text-xs font-bold text-zinc-100">Invalid sudo</h1>
+          <div className="flex gap-2 w-full">
+            <BoardCard title="Invalid SSH attempts">
               <InvalidSudo />
-            </div>
-            <div className="bg-zinc-800 h-full w-[25%] rounded-lg p-1 gap-2 flex flex-col items-center justify-center border">
-              <h1 className="text-6xl font-bold text-zinc-100">22</h1>
-              <p className="text-md text-center text-zinc-300">
-                Total Failed sudo attempts
-              </p>
-            </div>
+            </BoardCard>
+            <BoardCard width="25%">
+              <div className="flex flex-col justify-center items-center w-full h-full">
+                <h1 className="text-6xl font-bold text-zinc-100">22</h1>
+                <p className="text-md text-center text-zinc-300">
+                  Total Failed SSH attempts
+                </p>
+              </div>
+            </BoardCard>
           </div>
-          <div className="h-60 w-full rounded-lg gap-2 flex">
-            <div className="bg-zinc-800 h-full w-full rounded-lg p-1 gap-2 flex flex-col border">
-              <h1 className="text-xs font-bold text-zinc-100">
-                Successful sudo
-              </h1>
+          <div className="flex gap-2 w-full">
+            <BoardCard title="Successful SSH sessions">
               <InvalidSudo />
-            </div>
-            <div className="bg-zinc-800 h-full w-[25%] rounded-lg p-1 gap-2 flex flex-col items-center justify-center border">
-              <h1 className="text-6xl font-bold text-zinc-100">22</h1>
-              <p className="text-md text-center text-zinc-300">
-                Total Success sudo attempts
-              </p>
-            </div>
+            </BoardCard>
+            <BoardCard width="25%">
+              <div className="flex flex-col justify-center items-center w-full h-full">
+                <h1 className="text-6xl font-bold text-zinc-100">22</h1>
+                <p className="text-md text-center text-zinc-300">
+                  Total Successful SSH sessions
+                </p>
+              </div>
+            </BoardCard>
           </div>
         </div>
       </div>
