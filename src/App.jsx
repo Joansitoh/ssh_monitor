@@ -36,25 +36,25 @@ function App() {
     const fetchSuccessData = async () => {
       const response = await fetch("api/ssh-logs/success");
       const data = await response.json();
-      setSshSuccessData(Object.values(data) || []);
+      if (!data.error) setSshSuccessData(Object.values(data) || []);
     };
 
     const fetchInvalidData = async () => {
       const response = await fetch("api/ssh-logs/invalid");
       const data = await response.json();
-      setSshInvalidData(Object.values(data) || []);
+      if (!data.error) setSshInvalidData(Object.values(data) || []);
     };
 
     const fetchSudoData = async () => {
       const response = await fetch("api/sudo-logs/success");
       const data = await response.json();
-      setSudoSuccessData(Object.values(data) || []);
+      if (!data.error) setSudoSuccessData(Object.values(data) || []);
     };
 
     const fetchInvalidSudoData = async () => {
       const response = await fetch("api/sudo-logs/invalid");
       const data = await response.json();
-      setSudoInvalidData(Object.values(data) || []);
+      if (!data.error) setSudoInvalidData(Object.values(data) || []);
     };
 
     fetchSudoData();

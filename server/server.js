@@ -4,6 +4,7 @@ import websocket from "@fastify/websocket";
 
 // Routes
 import ssh_routes from "./routes/ssh_routes.js";
+import { checkSyslog, createSyslog, restartSyslog } from "./syslog.js";
 
 const server = fastify({ logger: false });
 
@@ -13,18 +14,37 @@ const API_ROUTE = "/api";
 let start = Date.now();
 console.clear();
 console.log();
-console.log("  Starting server...");
+console.log("  Checking for syslog configuration...");
+
+// Check if syslog configuration exists
+const syslog = checkSyslog();
+if (!syslog) {
+  console.log("  Syslog configuration not found. Creating...");
+  try {
+    createSyslog();
+    restartSyslog();
+  } catch (err) {
+    console.error(
+      "  Unable to create syslog configuration. Check permissions."
+    );
+    console.error(err);
+    process.exit(1);
+  }
+}
+
+console.log("  Syslog configuration found.");
+console.log();
 
 const startServer = async () => {
-    server.register(cors);
-    server.register(websocket);
+  server.register(cors);
+  server.register(websocket);
 
   // Node routes
   server.register(ssh_routes, { prefix: API_ROUTE });
 
   server.listen({ port: PORT, host: "0.0.0.0" }, (err, address) => {
     if (err) {
-        server.log.error(err);
+      server.log.error(err);
       process.exit(1);
     }
 
