@@ -39,7 +39,6 @@ const startServer = async () => {
   server.register(cors);
   server.register(websocket);
 
-  // Node routes
   server.register(ssh_routes, { prefix: API_ROUTE });
 
   server.listen({ port: PORT, host: "0.0.0.0" }, (err, address) => {

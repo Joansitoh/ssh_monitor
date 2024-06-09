@@ -18,6 +18,8 @@ import ColorScheme from "./components/Colors/ColorScheme";
 import CountryCloud from "./components/Map/CountryCloud";
 import NamesCloud from "./components/Map/NamesCloud";
 
+import logo from "./assets/logo.png";
+import github from "./assets/github.ico";
 Chart.register(
   zoomPlugin,
   ChoroplethController,
@@ -67,9 +69,24 @@ function App() {
   }, []);
 
   return (
-    <div className="h-screen w-full flex flex-col bg-zinc-900">
-      <div className="h-24 p-5 flex items-center border-b">
-        <h1 className="text-2xl font-bold text-zinc-100">SSH Monitors</h1>
+    <div className="min-h-screen w-full flex flex-col bg-zinc-900">
+      <div className="h-24 p-5 flex justify-between items-center border-b gap-2">
+        <div className="flex gap-2 items-center">
+          <img src={logo} alt="logo" className="h-10" />
+          <h1 className="text-3xl font-bold text-zinc-100">
+            NetVisr SSH Monitor
+          </h1>
+        </div>
+        <div className="flex gap-2 items-center">
+          <img
+            src={github}
+            alt="github"
+            className="h-10 cursor-pointer"
+            onClick={() =>
+              window.open("https://github.com/joansitoh/ssh-monitor/", "_blank")
+            }
+          />
+        </div>
       </div>
       <div className="flex-1 flex flex-col p-5 gap-2">
         <div className="flex gap-2">
