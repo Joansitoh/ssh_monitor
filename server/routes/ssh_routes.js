@@ -9,28 +9,11 @@ const NETVISR_SUDO_INVALID_PATH = "/var/log/netvisr/sudo_failed.log";
 export default async function (fastify, opts) {
   const readFile = util.promisify(fs.readFile);
 
-  fastify.get("/test", async (request, reply) => {
-    try {
-      const data = await readFile("/var/log/auth.log", "utf8");
-      const failedAttempts = data.match(/^.*Failed password.*$/gm);
-      const successfulAttempts = data.match(/^.*session opened for user.*$/gm);
-
-      return {
-        failedAttempts: failedAttempts.length,
-        successfulAttempts: successfulAttempts.length,
-        failedAttemptsData: failedAttempts,
-        successfulAttemptsData: successfulAttempts,
-      };
-    } catch (err) {
-      console.error(err);
-      return { error: "Unable to read SSH logs" };
-    }
-  });
-
   fastify.get("/ssh-logs/success", async (request, reply) => {
     try {
       const data = await readFile(NETVISR_SSH_VALID_PATH, "utf8");
       // FORMAT: 2024-06-09T00:14:43.485508+02:00  Accepted password for megalul from ::1 port 39962 ssh2
+      // FORMAT: 2024-06-09T00:47:45.572654+00:00  Accepted publickey for ubuntu from 37.135.149.188 port 32928 ssh2: RSA SHA256:1yRj7Kr7A1/oPu6FbR/iA7hfEapVvm6JTgBOeDq66yo
 
       return data.split("\n").map((line) => {
         const parts = line.split(" ");
@@ -38,7 +21,7 @@ export default async function (fastify, opts) {
         const user = parts[parts.indexOf("for") + 1];
         const ip = parts[parts.indexOf("from") + 1];
         return { ip, user, timestamp: new Date(timestamp) };
-      });
+      }, []);
 
       const sshSuccess = data
         .split("\n")
@@ -60,29 +43,23 @@ export default async function (fastify, opts) {
   fastify.get("/ssh-logs/invalid", async (request, reply) => {
     try {
       const data = await readFile(NETVISR_SSH_INVALID_PATH, "utf8");
-      // FORMAT: 2024-06-09T00:14:43.485508+02:00  Failed password for megalul from ::1 port 49942 ssh2
 
-      return data.split("\n").map((line) => {
-        const parts = line.split(" ");
-        const timestamp = parts[0];
-        const user = parts[parts.indexOf("for") + 1];
-        const ip = parts[parts.indexOf("from") + 1];
-        return { ip, user, timestamp: new Date(timestamp) };
-      }, []);
-
-      const sshInvalid = data
+      return data
         .split("\n")
-        .filter(
-          (line) => line.includes("sshd") && line.includes("Failed password")
-        )
+        .filter((line) => line !== "")
         .map((line) => {
+          // Check if is empty line
           const parts = line.split(" ");
           const timestamp = parts[0];
-          const user = parts[parts.indexOf("for") + 1];
-          const ip = parts[parts.indexOf("from") + 1];
-          return { ip, user, timestamp };
-        });
-      return { ...sshInvalid };
+          const forIndex = parts.indexOf("for");
+          const userIndex = parts.indexOf("user");
+          const fromIndex = parts.indexOf("from");
+          const user =
+            forIndex !== -1 ? parts[forIndex + 1] : parts[userIndex + 1];
+          const ip = parts[fromIndex + 1];
+          console.log("Line: ", line, "User: ", user, "IP: ", ip);
+          return { ip, user, timestamp: new Date(timestamp) };
+        }, []);
     } catch (err) {
       console.error(err);
       return { error: "Unable to read SSH logs" };
