@@ -67,9 +67,7 @@ function App() {
   return (
     <div className="h-screen w-full flex flex-col bg-zinc-900">
       <div className="h-24 p-5 flex items-center border-b">
-        <h1 className="text-2xl font-bold text-zinc-100">
-          SSH Monitors
-        </h1>
+        <h1 className="text-2xl font-bold text-zinc-100">SSH Monitors</h1>
       </div>
       <div className="flex-1 flex flex-col p-5 gap-2">
         <div className="flex gap-2">
@@ -153,7 +151,7 @@ function App() {
         <div className="flex gap-2 w-full">
           <BoardCard height={240} title="Invalid SSH Names">
             <div className="h-full w-full">
-              <NamesCloud data={sshInvalidData} />
+              {/* <NamesCloud data={sshInvalidData} /> */}
             </div>
           </BoardCard>
           <BoardCard height={240} title="Invalid SSH Countries">
