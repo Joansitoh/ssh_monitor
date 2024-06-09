@@ -1,9 +1,23 @@
 import { useEffect, useState, useRef } from "react";
-import WordCloud from "react-d3-cloud";
+import WordCloud from "wordcloud";
 
 const CountryCloud = ({ data }) => {
   const [words, setWords] = useState([]);
-  const containerRef = useRef();
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    WordCloud(canvas, {
+      list: words || [["No data available yet", 100]],
+      gridSize: 8,
+      weightFactor: 10,
+      fontFamily: "Times, serif",
+      color: "random-dark",
+      backgroundColor: "#fff",
+      rotateRatio: 0.5,
+      rotationSteps: 2,
+    });
+  }, []);
 
   useEffect(() => {
     const wordList = data.reduce((acc, curr) => {
@@ -15,12 +29,7 @@ const CountryCloud = ({ data }) => {
       return acc;
     }, {});
 
-    setWords(
-      Object.keys(wordList).map((key) => ({
-        text: key,
-        value: wordList[key] * 4,
-      }))
-    );
+    setWords(Object.keys(wordList).map((key) => [key, wordList[key] * 4]));
   }, [data]);
 
   const width = containerRef.current ? containerRef.current.offsetWidth : 0;
@@ -28,13 +37,7 @@ const CountryCloud = ({ data }) => {
 
   return (
     <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
-      <WordCloud
-        width={width}
-        height={height}
-        spiral="rectangular"
-        fontSize={(word) => Math.log2(word.value) * 10}
-        data={words}
-      />
+      <canvas ref={canvasRef} width={width} height={height} />
     </div>
   );
 };
