@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 
 const NETVISR_SSH_VALID_PATH = "/var/log/netvisr/ssh_accepted.log";
 const NETVISR_SSH_INVALID_PATH = "/var/log/netvisr/ssh_failed.log";
-const NETVISR_SUDO_VALID_PATH = "/var/log/netvisr/sudo_success.log";
+const NETVISR_SUDO_VALID_PATH = "/var/log/netvisr/sudo_accepted.log";
 const NETVISR_SUDO_INVALID_PATH = "/var/log/netvisr/sudo_failed.log";
 
 async function getLocation(ip) {
@@ -89,7 +89,7 @@ export default async function (fastify, opts) {
         .map((line) => {
           const parts = line.split(" ");
           const timestamp = parts[0];
-          const user = parts[1];
+          const user = parts[2];
           return { user, timestamp: new Date(timestamp) };
         }, []);
     } catch (err) {

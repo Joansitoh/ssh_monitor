@@ -3,8 +3,6 @@ import { Chart } from "chart.js";
 import "chartjs-adapter-date-fns";
 import "chartjs-adapter-moment";
 
-import SSHInvalidAttempts from "./components/Map/SSHInvalidAttempts";
-
 import {
   ChoroplethController,
   GeoFeature,
@@ -12,7 +10,6 @@ import {
   ProjectionScale,
 } from "chartjs-chart-geo";
 import zoomPlugin from "chartjs-plugin-zoom";
-import SSHSuccessSessions from "./components/Map/SSHSuccessSessions";
 import BoardCard from "./components/Card/BoardCard";
 import BarChart from "./components/Bar/BarChart";
 import MapChart from "./components/Map/MapChart";
@@ -50,6 +47,7 @@ function App() {
       const response = await fetch("api/sudo-logs/success");
       const data = await response.json();
       if (!data.error) setSudoSuccessData(Object.values(data) || []);
+      console.log(data);
     };
 
     const fetchInvalidSudoData = async () => {
