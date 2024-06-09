@@ -7,8 +7,16 @@ const groupByCountry = (data) => {
   const grouped = {};
 
   data.forEach((item) => {
-    const [longitude, latitude] = item.location.loc.split(",").map(parseFloat);
-    const country = getCountry(item.location.country);
+    let longitude = 0;
+    let latitude = 0;
+    let country = "Unknown";
+
+    if (item.location && item.location.loc) {
+      const split = item.location.loc.split(",");
+      latitude = parseFloat(split[0]);
+      longitude = parseFloat(split[1]);
+      country = item.location.country;
+    }
 
     if (!grouped[country]) {
       grouped[country] = { country, longitude, latitude, count: 0 };
@@ -51,7 +59,7 @@ const MapChart = ({ data }) => {
         {groupedData.map((item) => (
           <CircleMarker
             key={item.country}
-            center={[item.longitude, item.latitude]}
+            center={[item.latitude, item.longitude]}
             radius={calculateRadius(item.count)}
             fillOpacity={0.5}
             stroke={false}

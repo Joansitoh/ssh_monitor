@@ -10,12 +10,14 @@ import {
   ProjectionScale,
 } from "chartjs-chart-geo";
 import zoomPlugin from "chartjs-plugin-zoom";
+
 import BoardCard from "./components/Card/BoardCard";
 import BarChart from "./components/Bar/BarChart";
 import MapChart from "./components/Map/MapChart";
 import ColorScheme from "./components/Colors/ColorScheme";
-import NamesCloud from "./components/Map/NamesCloud";
 import CountryCloud from "./components/Map/CountryCloud";
+import NamesCloud from "./components/Map/NamesCloud";
+
 Chart.register(
   zoomPlugin,
   ChoroplethController,
@@ -149,12 +151,12 @@ function App() {
           </div>
         </div>
         <div className="flex gap-2 w-full">
-          <BoardCard height={240} title="Invalid SSH Names">
+          <BoardCard height={300} title="Invalid SSH Names">
             <div className="h-full w-full">
-              {/* <NamesCloud data={sshInvalidData} /> */}
+              <NamesCloud data={sshInvalidData} />
             </div>
           </BoardCard>
-          <BoardCard height={240} title="Invalid SSH Countries">
+          <BoardCard height={300} title="Invalid SSH Countries">
             <div className="h-full w-full">
               <CountryCloud data={sshInvalidData} />
             </div>
