@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { BubbleMapChart, topojson } from "chartjs-chart-geo";
 import world from "../../assets/countries-110m.json";
 import Chart from "chart.js/auto";
+import { getCountry } from "iso-3166-1-alpha-2";
 
 const worldFeatures = topojson.feature(world, world.objects.countries).features;
 
@@ -33,21 +34,6 @@ const tempData = {
   ],
 };
 
-const obtainLocation = async (ip) => {
-  // Obtain "country:" and "loc" from the ipstack API
-  if (ip === "::1") return { country: "Localhost", loc: "0,0" };
-  if (!ip) return { country: "Unknown", loc: "0,0" };
-  const url = `https://ipinfo.io/${ip}?token=a0b71cd8b4fcd5`;
-  return await fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      return {
-        country: data.country,
-        loc: data.loc,
-      };
-    });
-};
-
 const obtainDataset = (data) => {
   const labels = [];
   const datasets = [
@@ -61,25 +47,31 @@ const obtainDataset = (data) => {
   ];
 
   data.forEach(async (item) => {
-    const loc = await obtainLocation(item.ip);
-    const [longitude, latitude] = loc.loc.split(",").map(parseFloat);
-    const country = loc.country;
+    const [longitude, latitude] = item.location.loc.split(",").map(parseFloat);
+    const country = item.location.city;
 
     const index = labels.indexOf(country);
     if (index === -1) {
       labels.push(country);
-      datasets[0].data.push({
-        x: longitude,
-        y: latitude,
-        r: 5,
-        description: country,
-        value: 1,
-      });
+      if (country === "Unknown" || longitude === 0 || latitude === 0) {
+        datasets[0].data.push({
+          x: 0,
+          y: 0,
+          r: 1,
+          description: "Unknown",
+          value: 1,
+        });
+      } else {
+        datasets[0].data.push({
+          name: country,
+          x: latitude,
+          y: longitude,
+          value: 1,
+        });
+      }
     } else {
       datasets[0].data[index].value += 1;
     }
-
-    console.log(datasets);
   });
 
   return { labels, datasets };

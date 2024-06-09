@@ -2,14 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import ColorScheme from "../Colors/ColorScheme";
 
-const varyColor = (color, variation) => {
-  return {
-    r: Math.max(Math.min(color.r + variation, 255), 0),
-    g: Math.max(Math.min(color.g + variation, 255), 0),
-    b: Math.max(Math.min(color.b + variation, 255), 0),
-  };
-};
-
 const BarChart = ({ scheme = ColorScheme.RedScheme, data }) => {
   const [chart, setChart] = useState(null);
   const chartRef = useRef();
@@ -60,7 +52,6 @@ const BarChart = ({ scheme = ColorScheme.RedScheme, data }) => {
         }
 
         const color = scheme[colorIndex];
-        console.log(scheme);
         colorIndex++;
 
         const mainColorPrefix = `rgba(${color.r},${color.g},${color.b}`;

@@ -73,7 +73,7 @@ function App() {
       <div className="flex-1 flex flex-col p-5 gap-2">
         <div className="flex gap-2">
           <BoardCard title="Invalid SSH attempts">
-            <SSHInvalidAttempts />
+            <MapChart data={sshInvalidData} />
           </BoardCard>
           <BoardCard title="Successful SSH sessions">
             <MapChart data={sshSuccessData} />
