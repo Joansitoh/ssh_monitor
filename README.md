@@ -8,13 +8,13 @@
     <em>NETVISR SSH MONITOR</em>
 </p>
 <p align="center">
-	<img src="https://img.shields.io/github/license/Joansitoh/ufw_manager_gui?style=flat&color=0080ff" alt="license">
-	<img src="https://img.shields.io/github/last-commit/Joansitoh/ufw_manager_gui?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-	<img src="https://img.shields.io/github/languages/top/Joansitoh/ufw_manager_gui?style=flat&color=0080ff" alt="repo-top-language">
-	<img src="https://img.shields.io/github/languages/count/Joansitoh/ufw_manager_gui?style=flat&color=0080ff" alt="repo-language-count">
+	<img src="https://img.shields.io/github/license/Joansitoh/ssh_monitor?style=flat&color=0080ff" alt="license">
+	<img src="https://img.shields.io/github/last-commit/Joansitoh/ssh_monitor?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
+	<img src="https://img.shields.io/github/languages/top/Joansitoh/ssh_monitor?style=flat&color=0080ff" alt="repo-top-language">
+	<img src="https://img.shields.io/github/languages/count/Joansitoh/ssh_monitor?style=flat&color=0080ff" alt="repo-language-count">
 <p>
 <p align="center">
-		<em>UFW MANAGER GUI is a Python application that allows you to manage UFW (Uncomplicated Firewall) ports on a remote machine via SSH. The application features a simple and user-friendly graphical interface. I'm new to this so don't kill me either.</em>
+<em>NETVISR SSH MONITOR is a React application that allows you to monitor SSH connections on machines. The application features a simple and user-friendly graphical interface.</em>
 </p>
 <p align="center">
 	<img src="https://img.shields.io/badge/electronbuilder-FFFFFF.svg?style=flat&logo=electron-builder&logoColor=black" alt="electronbuilder">
@@ -45,18 +45,24 @@
 
 ## 📍 Overview
 
-![UFW GUI Manager screenshot 1](/resources/login_preview.png)
-![UFW GUI Manager screenshot 2](/resources/tables_preview.png)
-![UFW GUI Manager screenshot 3](/resources/adding_rule.png)
+![SSH Monitor screenshot 1](/resources/ssh_panel_one.png)
+![SSH Monitor screenshot 2](/resources/ssh_panel_two.png)
+<details>
+  <summary>SSH Monitor Screenshots</summary>
 
+  ![SSH Monitor screenshot 3](/resources/ssh_attempts_bars.png)
+  ![SSH Monitor screenshot 3](/resources/ssh_attempts_map.png)
+  ![SSH Monitor screenshot 3](/resources/ssh_attempts_names.png)
+
+</details>
 ---
 
 ## 📦 Features
 
-<code>► Add or delete custom UFW rules</code>
+<code>► Geo-location of IP addresses</code>
 <code>► User-friendly interface</code>
-<code>► Secure SSH connection</code>
-<code>► List view of open ports</code>
+<code>► Real-time monitoring of SSH connections</code>
+<code>► Count of ssh connections</code>
 
 ---
 
@@ -66,20 +72,21 @@
 
 Ensure you have the following dependencies installed on your system:
 
-- **Node.js**: `version 20.0.0` (Only for development)
+- **Node.js**: `version 20.0.0`
+- **rsyslog**: `version 8.2108.0`
 
 ### ⚙️ Installation
 
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/Joansitoh/ufw_manager_gui/
+git clone https://github.com/Joansitoh/ssh_monitor/
 ```
 
 2. Change to the project directory:
 
 ```sh
-cd
+cd ssh_monitor
 ```
 
 3. Install the dependencies:
@@ -90,19 +97,45 @@ npm install
 
 ### 🤖 Running
 
-Use the following command to run :
+#### Development Mode
+
+If you want to run the application in development mode, you can use the following command:
 
 ```sh
-npm run dev
+npm run test
 ```
+
+#### Production Mode
+
+Running the application in production mode involves several steps:
+
+1. Build the application:
+
+```sh
+npm run build
+```
+
+2. Copy the build output to the web server directory. This example uses Apache, so the target directory is `/var/www/html`. Adjust this command if you're using a different web server like Nginx:
+
+```sh
+cp -r dist/* /var/www/html/
+```
+
+3. Run the API server:
+
+```sh
+npm run api
+```
+
+Note: You need a web server like Apache2 or Nginx to serve the static files in production mode.
 
 ## 🤝 Contributing
 
 Contributions are welcome! Here are several ways you can contribute:
 
-- **[Submit Pull Requests](https://github.com/Joansitoh/ufw_manager_gui/blob/main/CONTRIBUTING.md)**: Review open PRs, and submit your own PRs.
-- **[Join the Discussions](https://github.com/Joansitoh/ufw_manager_gui/discussions)**: Share your insights, provide feedback, or ask questions.
-- **[Report Issues](https://github.com/Joansitoh/ufw_manager_gui/issues)**: Submit bugs found or log feature requests for .
+- **[Submit Pull Requests](https://github.com/Joansitoh/ssh_monitor/blob/main/CONTRIBUTING.md)**: Review open PRs, and submit your own PRs.
+- **[Join the Discussions](https://github.com/Joansitoh/ssh_monitor/discussions)**: Share your insights, provide feedback, or ask questions.
+- **[Report Issues](https://github.com/Joansitoh/ssh_monitor/issues)**: Submit bugs found or log feature requests for .
 
 <details closed>
     <summary>Contributing Guidelines</summary>
@@ -110,7 +143,7 @@ Contributions are welcome! Here are several ways you can contribute:
 1. **Fork the Repository**: Start by forking the project repository to your GitHub account.
 2. **Clone Locally**: Clone the forked repository to your local machine using a Git client.
    ```sh
-   git clone https://github.com/Joansitoh/ufw_manager_gui/
+   git clone https://github.com/Joansitoh/ssh_monitor/
    ```
 3. **Create a New Branch**: Always work on a new branch, giving it a descriptive name.
    ```sh
