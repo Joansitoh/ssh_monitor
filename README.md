@@ -17,8 +17,6 @@
 <em>NETVISR SSH MONITOR is a React application that allows you to monitor SSH connections on machines. The application features a simple and user-friendly graphical interface.</em>
 </p>
 <p align="center">
-	<img src="https://img.shields.io/badge/electronbuilder-FFFFFF.svg?style=flat&logo=electron-builder&logoColor=black" alt="electronbuilder">
-	<img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black" alt="JavaScript">
 	<img src="https://img.shields.io/badge/Prettier-F7B93E.svg?style=flat&logo=Prettier&logoColor=black" alt="Prettier">
 	<img src="https://img.shields.io/badge/HTML5-E34F26.svg?style=flat&logo=HTML5&logoColor=white" alt="HTML5">
 	<img src="https://img.shields.io/badge/YAML-CB171E.svg?style=flat&logo=YAML&logoColor=white" alt="YAML">
@@ -26,7 +24,6 @@
 	<img src="https://img.shields.io/badge/Vite-646CFF.svg?style=flat&logo=Vite&logoColor=white" alt="Vite">
 	<img src="https://img.shields.io/badge/React-61DAFB.svg?style=flat&logo=React&logoColor=black" alt="React">
 	<img src="https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white" alt="ESLint">
-	<img src="https://img.shields.io/badge/Electron-47848F.svg?style=flat&logo=Electron&logoColor=white" alt="Electron">
 	<img src="https://img.shields.io/badge/JSON-000000.svg?style=flat&logo=JSON&logoColor=white" alt="JSON">
 </p>
 <hr>
@@ -47,15 +44,15 @@
 
 ![SSH Monitor screenshot 1](/resources/ssh_panel_one.png)
 ![SSH Monitor screenshot 2](/resources/ssh_panel_two.png)
+
 <details>
   <summary>SSH Monitor Screenshots</summary>
 
-  ![SSH Monitor screenshot 3](/resources/ssh_attempts_bars.png)
-  ![SSH Monitor screenshot 3](/resources/ssh_attempts_map.png)
-  ![SSH Monitor screenshot 3](/resources/ssh_attempts_names.png)
+![SSH Monitor screenshot 3](/resources/ssh_attempts_bars.png)
+![SSH Monitor screenshot 3](/resources/ssh_attempts_map.png)
+![SSH Monitor screenshot 3](/resources/ssh_attempts_names.png)
 
-</details>
----
+## </details>
 
 ## 📦 Features
 
