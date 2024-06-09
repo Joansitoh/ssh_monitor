@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "concurrently \"node server/server.js\" \"npm run dev --host\"",
+    "api": "node server/server.js",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
