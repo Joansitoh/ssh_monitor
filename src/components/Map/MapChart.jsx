@@ -29,9 +29,8 @@ const MapChart = ({ data }) => {
   }, [data]);
 
   const calculateRadius = (count) => {
-    // Custom scaling logic based on your requirements
-    if (maxValue === 0) return 0; // Handle division by zero case
-    const maxRadius = 24; // Maximum radius you want to use
+    if (maxValue === 0) return 0;
+    const maxRadius = 24;
     return Math.sqrt(count / maxValue) * maxRadius;
   };
 
@@ -57,11 +56,7 @@ const MapChart = ({ data }) => {
             fillOpacity={0.5}
             stroke={false}
           >
-            <Tooltip
-              direction="right"
-              offset={[-8, -2]}
-              opacity={0.8}
-            >
+            <Tooltip direction="right" offset={[-8, -2]} opacity={0.8}>
               <span>{item.country}</span>
               <br />
               <span>{item.count} attempts</span>
