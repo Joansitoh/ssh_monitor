@@ -116,4 +116,5 @@ export default async function (fastify, opts) {
       return { error: "Unable to read sudo failure logs" };
     }
   });
+
 }

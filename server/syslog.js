@@ -12,14 +12,14 @@ const createSyslog = () => {
   const netvisrConf = "/etc/rsyslog.d/netvisr.conf";
   const netvisrConfContent = `# Netvisr logs format for SSH and Sudo activities
 
-$template sshInvalidUserFormat,"%timestamp:::date-rfc3339% Invalid user %msg:R,ERE,1,FIELD:Invalid user ([a-zA-Z0-9_.-]+) from ([0-9.]+) port [0-9]+--end% from %msg:R,ERE,1,FIELD:from ([0-9.]+)--end%\\n"
-$template sshFailedPasswordFormat,"%timestamp:::date-rfc3339% %msg:R,ERE,1,FIELD:([a-zA-Z0-9_.-]+) from ([0-9.]+)--end%\\n"
+$template sshInvalidUserFormat,"%timestamp:::date-rfc3339% Invalid user %msg:R,ERE,1,FIELD:Invalid user ([a-zA-Z0-9_.-]+) from ([0-9.]+) port [0-9]+--end% from %msg:R,ERE,1,FIELD:from ([0-9.]+)--end%\n"
+$template sshFailedPasswordFormat,"%timestamp:::date-rfc3339% %msg:R,ERE,1,FIELD:([a-zA-Z0-9_.-]+) from ([0-9.]+)--end%\n"
 
-$template sshSuccessFormat,"%timestamp:::date-rfc3339% Accepted password for %msg:R,ERE,1,FIELD:Accepted password for ([a-zA-Z0-9_.-]+) from ([0-9.]+) port [0-9]+--end% from %msg:R,ERE,1,FIELD:from ([0-9.]+)--end%\\n"
-$template sshKeyAuthFormat,"%timestamp:::date-rfc3339% Accepted publickey for %msg:R,ERE,1,FIELD:Accepted publickey for ([a-zA-Z0-9_.-]+) from ([0-9.]+) port [0-9]+--end% from %msg:R,ERE,1,FIELD:from ([0-9.]+)--end%\\n"
+$template sshSuccessFormat,"%timestamp:::date-rfc3339% Accepted password for %msg:R,ERE,1,FIELD:Accepted password for ([a-zA-Z0-9_.-]+) from ([0-9.]+) port [0-9]+--end% from %msg:R,ERE,1,FIELD:from ([0-9.]+)--end%\n"
+$template sshKeyAuthFormat,"%timestamp:::date-rfc3339% Accepted publickey for %msg:R,ERE,1,FIELD:Accepted publickey for ([a-zA-Z0-9_.-]+) from ([0-9.]+) port [0-9]+--end% from %msg:R,ERE,1,FIELD:from ([0-9.]+)--end%\n"
 
 $template sudoFailFormat,"%timestamp:::date-rfc3339% %msg:R,ERE,1,FIELD:pam_unix\\(sudo:auth\\): authentication failure; logname=([a-zA-Z0-9_.-]+) uid=([0-9]+) euid=([0-9]+) tty=([a-zA-Z0-9_.-/]+) ruser=([a-zA-Z0-9_.-]+) rhost=  user=([a-zA-Z0-9_.-]+)--end%"
-$template sudoSuccessFormat,"%timestamp:::date-rfc3339% %msg:R,ERE,1,FIELD:([^:]+) :--end%\\n"
+$template sudoSuccessFormat,"%timestamp:::date-rfc3339% %msg:R,ERE,1,FIELD:([^:]+) :--end%\n"
 
 # Rule for failed SSH login attempts due to invalid user
 if $programname == 'sshd' and $msg contains 'Invalid user' then /var/log/netvisr/ssh_failed.log;sshInvalidUserFormat

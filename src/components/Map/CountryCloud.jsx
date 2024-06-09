@@ -6,7 +6,6 @@ const CountryCloud = ({ data }) => {
   const containerRef = useRef();
 
   useEffect(() => {
-    console.log(data);
     const wordList = data.reduce((acc, curr) => {
       if (acc[curr.location?.city || "Unknown"]) {
         acc[curr.location?.city || "Unknown"]++;

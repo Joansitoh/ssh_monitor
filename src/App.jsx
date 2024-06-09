@@ -49,7 +49,6 @@ function App() {
       const response = await fetch("api/sudo-logs/success");
       const data = await response.json();
       if (!data.error) setSudoSuccessData(Object.values(data) || []);
-      console.log(data);
     };
 
     const fetchInvalidSudoData = async () => {
@@ -68,7 +67,9 @@ function App() {
   return (
     <div className="h-screen w-full flex flex-col bg-zinc-900">
       <div className="h-24 p-5 flex items-center border-b">
-        <h1 className="text-2xl font-bold text-zinc-100">SSH Monitor</h1>
+        <h1 className="text-2xl font-bold text-zinc-100">
+          SSH Monitors
+        </h1>
       </div>
       <div className="flex-1 flex flex-col p-5 gap-2">
         <div className="flex gap-2">
