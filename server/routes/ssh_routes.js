@@ -15,24 +15,16 @@ export default async function (fastify, opts) {
       // FORMAT: 2024-06-09T00:14:43.485508+02:00  Accepted password for megalul from ::1 port 39962 ssh2
       // FORMAT: 2024-06-09T00:47:45.572654+00:00  Accepted publickey for ubuntu from 37.135.149.188 port 32928 ssh2: RSA SHA256:1yRj7Kr7A1/oPu6FbR/iA7hfEapVvm6JTgBOeDq66yo
 
-      return data.split("\n").map((line) => {
-        const parts = line.split(" ");
-        const timestamp = parts[0];
-        const user = parts[parts.indexOf("for") + 1];
-        const ip = parts[parts.indexOf("from") + 1];
-        return { ip, user, timestamp: new Date(timestamp) };
-      }, []);
-
-      const sshSuccess = data
+      return data
         .split("\n")
-        .filter((line) => line.includes("sshd") && line.includes("Accepted"))
+        .filter((line) => line !== "")
         .map((line) => {
           const parts = line.split(" ");
           const timestamp = parts[0];
           const user = parts[parts.indexOf("for") + 1];
           const ip = parts[parts.indexOf("from") + 1];
           return { ip, user, timestamp: new Date(timestamp) };
-        });
+        }, []);
       return { ...sshSuccess };
     } catch (err) {
       console.error(err);
@@ -71,12 +63,15 @@ export default async function (fastify, opts) {
       const data = await readFile(NETVISR_SUDO_VALID_PATH, "utf8");
       // FORMAT: 2024-06-09T00:10:29.489696+02:00 megalul
 
-      return data.split("\n").map((line) => {
-        const parts = line.split(" ");
-        const timestamp = parts[0];
-        const user = parts[1];
-        return { user, timestamp: new Date(timestamp) };
-      }, []);
+      return data
+        .split("\n")
+        .filter((line) => line !== "")
+        .map((line) => {
+          const parts = line.split(" ");
+          const timestamp = parts[0];
+          const user = parts[1];
+          return { user, timestamp: new Date(timestamp) };
+        }, []);
 
       const sudoSuccessPattern =
         /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}).* sudo: pam_unix\(sudo:session\): session opened for user root\(uid=0\) by (\w+)/g;
@@ -101,12 +96,15 @@ export default async function (fastify, opts) {
       const data = await readFile(NETVISR_SUDO_INVALID_PATH, "utf8");
       // FORMAT: 2024-06-09T00:10:29.489696+02:00 megalul
 
-      return data.split("\n").map((line) => {
-        const parts = line.split(" ");
-        const timestamp = parts[0];
-        const user = parts[1];
-        return { user, timestamp: new Date(timestamp) };
-      }, []);
+      return data
+        .split("\n")
+        .filter((line) => line !== "")
+        .map((line) => {
+          const parts = line.split(" ");
+          const timestamp = parts[0];
+          const user = parts[1];
+          return { user, timestamp: new Date(timestamp) };
+        }, []);
 
       const sudoFailurePattern =
         /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}).* sudo: pam_unix\(sudo:auth\): authentication failure;.* user=(\w+)/g;

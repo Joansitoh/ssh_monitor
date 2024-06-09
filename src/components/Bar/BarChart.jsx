@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
+import ColorScheme from "../Colors/ColorScheme";
 
 const varyColor = (color, variation) => {
   return {
@@ -9,7 +10,7 @@ const varyColor = (color, variation) => {
   };
 };
 
-const BarChart = ({ rgb = { r: 75, g: 192, b: 192 }, data }) => {
+const BarChart = ({ scheme = ColorScheme.RedScheme, data }) => {
   const [chart, setChart] = useState(null);
   const chartRef = useRef();
 
@@ -23,6 +24,7 @@ const BarChart = ({ rgb = { r: 75, g: 192, b: 192 }, data }) => {
       const groupedData = data.reduce((acc, { user, timestamp }) => {
         const hour = new Date(timestamp);
         //hour.setMinutes(0, 0, 0); // Redondear al inicio de la hora
+        hour.setSeconds(0, 0); // Redondear al inicio de la hora
 
         const timeKey = hour.getTime();
         if (!acc[timeKey]) acc[timeKey] = {};
@@ -50,30 +52,29 @@ const BarChart = ({ rgb = { r: 75, g: 192, b: 192 }, data }) => {
         return acc;
       }, {});
 
-      let colorVariation = 0;
+      let colorIndex = 0;
       return Object.entries(userGroups).map(([user, data]) => {
-        const variedColor = varyColor(rgb, colorVariation);
-        colorVariation += 20; // Ajusta este valor para cambiar cuánto varía el color
+        // Si el índice de color excede la longitud del esquema de colores, reinícialo a 0
+        if (colorIndex >= scheme.length) {
+          colorIndex = 0;
+        }
 
-        const mainColorPrefix = `rgba(${variedColor.r},${variedColor.g},${variedColor.b}`;
+        const color = scheme[colorIndex];
+        console.log(scheme);
+        colorIndex++;
+
+        const mainColorPrefix = `rgba(${color.r},${color.g},${color.b}`;
 
         return {
           label: user,
           backgroundColor: mainColorPrefix + ",0.2)",
           borderColor: mainColorPrefix + ",1)",
           borderWidth: 1,
-          barThickness: 10,
           hoverBackgroundColor: mainColorPrefix + ",0.4)",
           hoverBorderColor: mainColorPrefix + ",1)",
           data,
         };
       });
-    };
-
-    const getCurrentDatePlusOneHour = () => {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() + 1);
-      return now;
     };
 
     const newChart = new Chart(chartInstance, {
@@ -86,6 +87,21 @@ const BarChart = ({ rgb = { r: 75, g: 192, b: 192 }, data }) => {
           legend: {
             display: true,
             position: "right",
+          },
+          zoom: {
+            pan: {
+              enabled: true,
+              mode: "x",
+            },
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true,
+              },
+              mode: "x",
+            },
           },
         },
         scales: {
@@ -103,7 +119,10 @@ const BarChart = ({ rgb = { r: 75, g: 192, b: 192 }, data }) => {
               display: false,
             },
             min: new Date().setHours(new Date().getHours() - 2),
-            max: getCurrentDatePlusOneHour(),
+            ticks: {
+              maxRotation: 0,
+              autoSkip: true,
+            },
           },
           y: {
             stacked: true,

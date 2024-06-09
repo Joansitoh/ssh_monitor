@@ -16,6 +16,7 @@ import SSHSuccessSessions from "./components/Map/SSHSuccessSessions";
 import BoardCard from "./components/Card/BoardCard";
 import BarChart from "./components/Bar/BarChart";
 import MapChart from "./components/Map/MapChart";
+import ColorScheme from "./components/Colors/ColorScheme";
 Chart.register(
   zoomPlugin,
   ChoroplethController,
@@ -81,7 +82,7 @@ function App() {
         <div className="flex gap-2">
           <div className="flex gap-2 w-full">
             <BoardCard title="Invalid SSH attempts">
-              <BarChart data={sshInvalidData} rgb={{ r: 255, g: 99, b: 132 }} />
+              <BarChart data={sshInvalidData} scheme={ColorScheme.RedScheme} />
             </BoardCard>
             <BoardCard width="25%">
               <div className="flex flex-col justify-center items-center w-full h-full">
@@ -96,7 +97,10 @@ function App() {
           </div>
           <div className="flex gap-2 w-full">
             <BoardCard title="Successful SSH sessions">
-              <BarChart data={sshSuccessData} />
+              <BarChart
+                data={sshSuccessData}
+                scheme={ColorScheme.GreenScheme}
+              />
             </BoardCard>
             <BoardCard width="25%">
               <div className="flex flex-col justify-center items-center w-full h-full">
@@ -113,10 +117,7 @@ function App() {
         <div className="flex gap-2">
           <div className="flex gap-2 w-full">
             <BoardCard title="Invalid sudo">
-              <BarChart
-                data={sudoInvalidData}
-                rgb={{ r: 255, g: 99, b: 132 }}
-              />
+              <BarChart data={sudoInvalidData} scheme={ColorScheme.RedScheme} />
             </BoardCard>
             <BoardCard width="25%">
               <div className="flex flex-col justify-center items-center w-full h-full">
@@ -131,7 +132,10 @@ function App() {
           </div>
           <div className="flex gap-2 w-full">
             <BoardCard title="Successful sudo">
-              <BarChart data={sudoSuccessData} />
+              <BarChart
+                data={sudoSuccessData}
+                scheme={ColorScheme.GreenScheme}
+              />
             </BoardCard>
             <BoardCard width="25%">
               <div className="flex flex-col justify-center items-center w-full h-full">
