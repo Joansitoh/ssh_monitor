@@ -87,9 +87,9 @@ export default async function (fastify, opts) {
         .split("\n")
         .filter((line) => line !== "")
         .map((line) => {
-          const parts = line.split(" ");
+          const parts = line.split(/\s+/);
           const timestamp = parts[0];
-          const user = parts[2];
+          const user = parts[1];
           return { user, timestamp: new Date(timestamp) };
         }, []);
     } catch (err) {
@@ -106,7 +106,7 @@ export default async function (fastify, opts) {
         .split("\n")
         .filter((line) => line !== "")
         .map((line) => {
-          const parts = line.split(" ");
+          const parts = line.split(/\s+/);
           const timestamp = parts[0];
           const user = parts[1];
           return { user, timestamp: new Date(timestamp) };
