@@ -11,7 +11,7 @@ import { cacheManager } from "./manager/cacheManager.js";
 
 const server = fastify({ logger: false });
 
-const PORT = 5001;
+const PORT = 5000;
 const API_ROUTE = "/api";
 
 let start = Date.now();
