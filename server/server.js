@@ -3,12 +3,15 @@ import cors from "@fastify/cors";
 import websocket from "@fastify/websocket";
 
 // Routes
-import ssh_routes from "./routes/ssh_routes.js";
+import sshRoutes from "./routes/sshRoutes.js";
+import sudoRoutes from "./routes/sudoRoutes.js";
+
 import { checkSyslog, createSyslog, restartSyslog } from "./syslog.js";
+import { cacheManager } from "./manager/cacheManager.js";
 
 const server = fastify({ logger: false });
 
-const PORT = 5000;
+const PORT = 5001;
 const API_ROUTE = "/api";
 
 let start = Date.now();
@@ -39,7 +42,16 @@ const startServer = async () => {
   server.register(cors);
   server.register(websocket);
 
-  server.register(ssh_routes, { prefix: API_ROUTE });
+  console.log("  Registering routes...");
+
+  server.register(sshRoutes, { prefix: API_ROUTE });
+  server.register(sudoRoutes, { prefix: API_ROUTE });
+
+  console.log("  Processing cache data...");
+
+  cacheManager.processCacheFinderQueue();
+  cacheManager.processCacheQueue();
+  cacheManager.processCacheMap();
 
   server.listen({ port: PORT, host: "0.0.0.0" }, (err, address) => {
     if (err) {

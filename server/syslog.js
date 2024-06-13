@@ -49,8 +49,6 @@ const restartSyslog = () => {
       console.error(`exec error: ${error}`);
       return;
     }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
   });
 };
 

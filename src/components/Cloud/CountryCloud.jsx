@@ -7,21 +7,19 @@ const CountryCloud = ({ data }) => {
   const [words, setWords] = useState([]);
 
   useEffect(() => {
-    const wordList = data.reduce((acc, curr) => {
-      if (acc[curr.location?.city || "Unknown"]) {
-        acc[curr.location?.city || "Unknown"]++;
-      } else {
-        acc[curr.location?.city || "Unknown"] = 1;
-      }
-      return acc;
-    }, {});
+    if (!data) return;
 
-    setWords(
-      Object.keys(wordList).map((key) => ({
-        text: key,
-        value: wordList[key],
-      }))
-    );
+    const wordsArray = Object.keys(data).map((key) => ({
+      text: key,
+      value: data[key].count,
+      cities: data[key].cities,
+      locations: data[key].locations,
+    }));
+
+    // Ordena las palabras en orden descendente por valor
+    wordsArray.sort((a, b) => b.value - a.value);
+
+    setWords(wordsArray);
   }, [data]);
 
   const callbacks = {

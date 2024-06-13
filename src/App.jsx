@@ -15,8 +15,8 @@ import BoardCard from "./components/Card/BoardCard";
 import BarChart from "./components/Bar/BarChart";
 import MapChart from "./components/Map/MapChart";
 import ColorScheme from "./components/Colors/ColorScheme";
-import CountryCloud from "./components/Map/CountryCloud";
-import NamesCloud from "./components/Map/NamesCloud";
+import CountryCloud from "./components/Cloud/CountryCloud";
+import NamesCloud from "./components/Cloud/NamesCloud";
 
 import logo from "./assets/logo.png";
 import github from "./assets/github.ico";
@@ -31,40 +31,45 @@ Chart.register(
 function App() {
   const [loading, setLoading] = useState(true);
 
-  const [sshSuccessData, setSshSuccessData] = useState([]);
-  const [sshInvalidData, setSshInvalidData] = useState([]);
-  const [sudoSuccessData, setSudoSuccessData] = useState([]);
-  const [sudoInvalidData, setSudoInvalidData] = useState([]);
+  // 6 hours
+  const defaultRange = [
+    new Date().getTime(),
+    new Date().getTime() - 2 * 60 * 60 * 1000,
+  ];
+
+  // SSH Data
+  const [sshSuccessGeneral, setSshSuccessGeneral] = useState([]);
+  const [sshInvalidGeneral, setSshInvalidGeneral] = useState([]);
+
+  // Sudo Data
+  const [sudoSuccessGeneral, setSudoSuccessGeneral] = useState([]);
+  const [sudoInvalidGeneral, setSudoInvalidGeneral] = useState([]);
 
   useEffect(() => {
-    const fetchSuccessData = async () => {
-      const response = await fetch("api/ssh-logs/success");
-      const data = await response.json();
-      if (!data.error) setSshSuccessData(Object.values(data) || []);
+    const fetchSuccessGeneral = async () => {
+      const sshResponse = await fetch("api/ssh-logs/success/general");
+      const sshData = await sshResponse.json();
+      if (!sshData.error) setSshSuccessGeneral(sshData);
+
+      const sudoResponse = await fetch("api/sudo-logs/success/general");
+      const sudoData = await sudoResponse.json();
+      if (!sudoData.error) setSudoSuccessGeneral(sudoData);
     };
 
-    const fetchInvalidData = async () => {
-      const response = await fetch("api/ssh-logs/invalid");
-      const data = await response.json();
-      if (!data.error) setSshInvalidData(Object.values(data) || []);
+    const fetchInvalidGeneral = async () => {
+      const sshResponse = await fetch("api/ssh-logs/invalid/general");
+      const sshData = await sshResponse.json();
+      if (!sshData.error) setSshInvalidGeneral(sshData);
+
+      const sudoResponse = await fetch("api/sudo-logs/invalid/general");
+      const sudoData = await sudoResponse.json();
+      if (!sudoData.error) setSudoInvalidGeneral(sudoData);
     };
 
-    const fetchSudoData = async () => {
-      const response = await fetch("api/sudo-logs/success");
-      const data = await response.json();
-      if (!data.error) setSudoSuccessData(Object.values(data) || []);
-    };
+    // General data
+    fetchSuccessGeneral();
+    fetchInvalidGeneral();
 
-    const fetchInvalidSudoData = async () => {
-      const response = await fetch("api/sudo-logs/invalid");
-      const data = await response.json();
-      if (!data.error) setSudoInvalidData(Object.values(data) || []);
-    };
-
-    fetchSudoData();
-    fetchInvalidSudoData();
-    fetchInvalidData();
-    fetchSuccessData();
     setLoading(false);
   }, []);
 
@@ -91,21 +96,25 @@ function App() {
       <div className="flex-1 flex flex-col p-5 gap-2">
         <div className="flex gap-2">
           <BoardCard title="Invalid SSH attempts">
-            <MapChart data={sshInvalidData} />
+            <MapChart data={loading ? [] : sshInvalidGeneral?.countries} total={sshInvalidGeneral?.total} />
           </BoardCard>
           <BoardCard title="Successful SSH sessions">
-            <MapChart data={sshSuccessData} />
+            <MapChart data={loading ? [] : sshSuccessGeneral?.countries} total={sshSuccessGeneral?.total} />
           </BoardCard>
         </div>
         <div className="flex gap-2">
           <div className="flex gap-2 w-full">
             <BoardCard title="Invalid SSH attempts">
-              <BarChart data={sshInvalidData} scheme={ColorScheme.RedScheme} />
+              <BarChart
+                endpoint="ssh-logs/invalid/data"
+                scheme={ColorScheme.RedScheme}
+                legend={false}
+              />
             </BoardCard>
             <BoardCard width="25%">
               <div className="flex flex-col justify-center items-center w-full h-full">
                 <h1 className="text-6xl font-bold text-zinc-100">
-                  {loading ? 0 : Object.keys(sshInvalidData).length}
+                  {loading ? 0 : sshInvalidGeneral?.total}
                 </h1>
                 <p className="text-md text-center text-zinc-300">
                   Total Failed SSH attempts
@@ -116,14 +125,14 @@ function App() {
           <div className="flex gap-2 w-full">
             <BoardCard title="Successful SSH sessions">
               <BarChart
-                data={sshSuccessData}
+                endpoint="ssh-logs/success/data"
                 scheme={ColorScheme.GreenScheme}
               />
             </BoardCard>
             <BoardCard width="25%">
               <div className="flex flex-col justify-center items-center w-full h-full">
                 <h1 className="text-6xl font-bold text-zinc-100">
-                  {Object.keys(sshSuccessData).length}
+                  {loading ? 0 : sshSuccessGeneral?.total}
                 </h1>
                 <p className="text-md text-center text-zinc-300">
                   Total Successful SSH sessions
@@ -135,12 +144,15 @@ function App() {
         <div className="flex gap-2">
           <div className="flex gap-2 w-full">
             <BoardCard title="Invalid sudo">
-              <BarChart data={sudoInvalidData} scheme={ColorScheme.RedScheme} />
+              <BarChart
+                endpoint="sudo-logs/invalid/data"
+                scheme={ColorScheme.RedScheme}
+              />
             </BoardCard>
             <BoardCard width="25%">
               <div className="flex flex-col justify-center items-center w-full h-full">
                 <h1 className="text-6xl font-bold text-zinc-100">
-                  {Object.keys(sudoInvalidData).length}
+                  {loading ? 0 : sudoInvalidGeneral?.total}
                 </h1>
                 <p className="text-md text-center text-zinc-300">
                   Total Failed sudo attempts
@@ -151,14 +163,14 @@ function App() {
           <div className="flex gap-2 w-full">
             <BoardCard title="Successful sudo">
               <BarChart
-                data={sudoSuccessData}
+                endpoint="sudo-logs/success/data"
                 scheme={ColorScheme.GreenScheme}
               />
             </BoardCard>
             <BoardCard width="25%">
               <div className="flex flex-col justify-center items-center w-full h-full">
                 <h1 className="text-6xl font-bold text-zinc-100">
-                  {Object.keys(sudoSuccessData).length}
+                  {loading ? 0 : sudoSuccessGeneral?.total}
                 </h1>
                 <p className="text-md text-center text-zinc-300">
                   Total Successful sudo sessions
@@ -170,12 +182,12 @@ function App() {
         <div className="flex gap-2 w-full">
           <BoardCard height={300} title="Invalid SSH Names">
             <div className="h-full w-full">
-              <NamesCloud data={sshInvalidData} />
+              <NamesCloud data={loading ? [] : sshInvalidGeneral?.usernames} />
             </div>
           </BoardCard>
           <BoardCard height={300} title="Invalid SSH Countries">
             <div className="h-full w-full">
-              <CountryCloud data={sshInvalidData} />
+              <CountryCloud data={loading ? [] : sshInvalidGeneral?.cities} />
             </div>
           </BoardCard>
         </div>
