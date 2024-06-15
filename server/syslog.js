@@ -42,6 +42,42 @@ if $programname == 'sudo' and $msg contains 'COMMAND=' and not ($msg contains 'i
   fs.writeFileSync(netvisrConf, netvisrConfContent);
 };
 
+const createCronJob = () => {
+  // Run judge every 10 minutes
+  const judgeJob = "*/5 * * * * /bin/bash /usr/bin/netvisr-judge";
+  // Run police every 7 minutes
+  const policeJob = "*/7 * * * * /bin/bash /usr/bin/netvisr-police";
+
+  // Add cron jobs
+  exec(
+    `(crontab -l ; echo "${judgeJob}") | crontab -`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+    }
+  );
+
+  exec(
+    `(crontab -l ; echo "${policeJob}") | crontab -`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+    }
+  );
+
+  // Restart cron service
+  exec("systemctl restart cron", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+  });
+};
+
 const restartSyslog = () => {
   // Restart rsyslog service
   exec("systemctl restart rsyslog", (error, stdout, stderr) => {
@@ -52,4 +88,4 @@ const restartSyslog = () => {
   });
 };
 
-export { checkSyslog, createSyslog, restartSyslog };
+export { checkSyslog, createSyslog, restartSyslog, createCronJob };
