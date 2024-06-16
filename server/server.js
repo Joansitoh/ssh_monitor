@@ -44,7 +44,7 @@ if (!syslog) {
 console.log("  Syslog configuration found.");
 console.log();
 
-console.log("  Creating scripts and cron jobs...");
+/* console.log("  Creating scripts and cron jobs...");
 
 try {
   createCronJob();
@@ -56,7 +56,7 @@ try {
 }
 
 console.log("  Scripts and cron jobs created.");
-console.log();
+console.log(); */
 
 const startServer = async () => {
   server.register(cors);

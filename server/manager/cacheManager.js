@@ -87,6 +87,7 @@ const cacheManager = {
             }
           }
           CACHE_QUEUE.push({ [log.ip]: location });
+          CACHE_MAP[log.ip] = location;
           await sleep(500);
         }
 
