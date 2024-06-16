@@ -1,5 +1,12 @@
 import fs from "fs";
+import path from "path";
 import { exec } from "child_process";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import cron from "node-cron";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const checkSyslog = () => {
   // Check if file /etc/rsyslog.d/netvisr.conf exists
@@ -42,39 +49,41 @@ if $programname == 'sudo' and $msg contains 'COMMAND=' and not ($msg contains 'i
   fs.writeFileSync(netvisrConf, netvisrConfContent);
 };
 
+const createScripts = () => {
+  // Define source and destination paths
+  const sourceJudgePath = path.join(__dirname, "files/netvisr-judge.sh");
+  const sourcePolicePath = path.join(__dirname, "files/netvisr-police.sh");
+  const destJudgePath = path.join("/usr/bin", "netvisr-judge");
+  const destPolicePath = path.join("/usr/bin", "netvisr-police");
+
+  // Copy and rename netvisr-judge.sh
+  fs.copyFileSync(sourceJudgePath, destJudgePath);
+  fs.chmodSync(destJudgePath, "755"); // Make the script executable
+
+  // Copy and rename netvisr-police.sh
+  fs.copyFileSync(sourcePolicePath, destPolicePath);
+  fs.chmodSync(destPolicePath, "755"); // Make the script executable
+};
+
 const createCronJob = () => {
-  // Run judge every 10 minutes
-  const judgeJob = "*/5 * * * * /bin/bash /usr/bin/netvisr-judge";
-  // Run police every 7 minutes
-  const policeJob = "*/7 * * * * /bin/bash /usr/bin/netvisr-police";
-
-  // Add cron jobs
-  exec(
-    `(crontab -l ; echo "${judgeJob}") | crontab -`,
-    (error, stdout, stderr) => {
+  cron.schedule("*/5 * * * *", () => {
+    console.log("Starting ip police job...");
+    exec("/bin/bash /usr/bin/netvisr-police", (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
         return;
       }
-    }
-  );
+    });
+  });
 
-  exec(
-    `(crontab -l ; echo "${policeJob}") | crontab -`,
-    (error, stdout, stderr) => {
+  cron.schedule("*/7 * * * *", () => {
+    console.log("Starting log judge job...");
+    exec("/bin/bash /usr/bin/netvisr-judge", (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
         return;
       }
-    }
-  );
-
-  // Restart cron service
-  exec("systemctl restart cron", (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return;
-    }
+    });
   });
 };
 
@@ -88,4 +97,10 @@ const restartSyslog = () => {
   });
 };
 
-export { checkSyslog, createSyslog, restartSyslog, createCronJob };
+export {
+  checkSyslog,
+  createSyslog,
+  restartSyslog,
+  createCronJob,
+  createScripts,
+};

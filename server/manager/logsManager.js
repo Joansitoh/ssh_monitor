@@ -53,6 +53,10 @@ const extractors = {
 };
 
 const getLogs = async (filePath, extractors) => {
+  if (!fs.existsSync(filePath)) {
+    return [];
+  }
+
   const data = await readFile(filePath, "utf8");
   const lines = data.split("\n").filter((line) => line !== "");
 

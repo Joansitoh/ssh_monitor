@@ -6,7 +6,13 @@ import websocket from "@fastify/websocket";
 import sshRoutes from "./routes/sshRoutes.js";
 import sudoRoutes from "./routes/sudoRoutes.js";
 
-import { checkSyslog, createSyslog, restartSyslog } from "./syslog.js";
+import {
+  checkSyslog,
+  createSyslog,
+  restartSyslog,
+  createCronJob,
+  createScripts,
+} from "./syslog.js";
 import { cacheManager } from "./manager/cacheManager.js";
 
 const server = fastify({ logger: false });
@@ -36,6 +42,20 @@ if (!syslog) {
 }
 
 console.log("  Syslog configuration found.");
+console.log();
+
+console.log("  Creating scripts and cron jobs...");
+
+try {
+  createCronJob();
+  createScripts();
+} catch (err) {
+  console.error("  Unable to create scripts and cron jobs.");
+  console.error(err);
+  process.exit(1);
+}
+
+console.log("  Scripts and cron jobs created.");
 console.log();
 
 const startServer = async () => {

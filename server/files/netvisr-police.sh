@@ -4,6 +4,8 @@ ssh_failed_log="/var/log/netvisr/ssh_failed.log"
 jail_log="/var/log/netvisr/jail.log"
 
 total_lines=$(wc -l < "$ssh_failed_log")
+new_ips=0
+initial_ips=$(wc -l < "$jail_log")
 
 count_ip_in_ssh_failed() {
     local ip="$1"
@@ -24,6 +26,7 @@ check_jail() {
 block_ip() {
     local ip="$1"
     echo "$ip" >> "$jail_log"
+    new_ips=$((new_ips + 1))
 }
 
 show_progress() {
@@ -59,3 +62,7 @@ while IFS= read -r line || [ -n "$line" ]; do
     progress_count=$((progress_count + 1))
     show_progress "$progress_count" "$total_lines"
 done < "$ssh_failed_log"
+
+# Save log
+time=$(date)
+echo "[$time] (Police) IP addresses added to the jail (New: $new_ips, Total: $(($initial_ips + $new_ips)))" >> /var/log/netvisr/crontab.log
